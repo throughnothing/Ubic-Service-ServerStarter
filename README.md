@@ -40,65 +40,60 @@ with [Server::Starter](http://search.cpan.org/perldoc?Server::Starter)
 
 # METHODS
 
-- `new($params)`
+- _args_ (optional)
 
-Parameters (optional if not specified otherwise):
+Arguments to send to start_server.
 
-    - _args_ (optional)
+- _cmd_ (required)
 
-    Arguments to send to start_server.
+ArrayRef of command + options to run with server starter.  Everything passed
+here will go be put after the `--` in the `start_server` command:
 
-    - _cmd_ (required)
+    start_server [ args ] -- [ cmd ]
 
-    ArrayRef of command + options to run with server starter.  Everything passed
-    here will go be put after the `--` in the `start_server` command:
+This argument is required becasue we have to have something to run!
 
-        start_server [ args ] -- [ cmd ]
+- _status_
 
-    This argument is required becasue we have to have something to run!
+Coderef to special function, that will check status of your application.
 
-    - _status_
+- _ubic_log_
 
-    Coderef to special function, that will check status of your application.
+Path to ubic log.
 
-    - _ubic_log_
+- _stdout_
 
-    Path to ubic log.
+Path to stdout log of plackup.
 
-    - _stdout_
+- _stderr_
 
-    Path to stdout log of plackup.
+Path to stderr log of plackup.
 
-    - _stderr_
+- _user_
 
-    Path to stderr log of plackup.
+User under which plackup will be started.
 
-    - _user_
+- _group_
 
-    User under which plackup will be started.
+Group under which plackup will be started. Default is all user groups.
 
-    - _group_
+- _cwd_
 
-    Group under which plackup will be started. Default is all user groups.
+Change working directory before starting a daemon.
 
-    - _cwd_
+- _pidfile_
 
-    Change working directory before starting a daemon.
+Pidfile for `Ubic::Daemon` module.
 
-    - _pidfile_
+If not specified, it will be derived from service's name or from _app_name_,
+if provided.
 
-    Pidfile for `Ubic::Daemon` module.
+Pidfile is:
 
-    If not specified, it will be derived from service's name or from _app_name_,
-    if provided.
-
-    Pidfile is:
-
-                        - _pidfile_ option value, if provided;
-                - `/tmp/APP_NAME.pid`, where APP_NAME is _app_name_ option value, if it's
-                provided;
+                - _pidfile_ option value, if provided;
+            - `/tmp/APP_NAME.pid`, where APP_NAME is _app_name_ option value, if it's
+            provided;
         - `/tmp/SERVICE_NAME.pid`, where SERVICE_NAME is service's full name.
-
     - `pidfile()`
 
     Get pidfile name.

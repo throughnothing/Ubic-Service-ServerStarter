@@ -161,12 +161,6 @@ with L<Server::Starter>
 
 =over
 
-=item C<new($params)>
-
-Parameters (optional if not specified otherwise):
-
-=over
-
 =item I<args> (optional)
 
 Arguments to send to start_server.
@@ -231,8 +225,6 @@ provided;
 =item *
 
 C</tmp/SERVICE_NAME.pid>, where SERVICE_NAME is service's full name.
-
-=back
 
 =item C<pidfile()>
 
