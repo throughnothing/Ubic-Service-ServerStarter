@@ -13,7 +13,7 @@ use Ubic::Daemon qw(:all);
 my $server_command = $ENV{'UBIC_SERVICE_SERVERSTARTER_BIN'} || 'server_starter';
 
 sub new {
-    my ($class) = @_;
+    my ($class) = (shift);
 
     my $params = validate(@_, {
         cmd         => { type => ARRAYREF },
