@@ -22,10 +22,11 @@ sub new {
         group       => { type => SCALAR | ARRAYREF, optional => 1 },
         status      => { type => CODEREF, optional => 1 },
         ubic_log    => { type => SCALAR, optional => 1 },
+        env         => { type => SCALAR, optional => 1 },
         stdout      => { type => SCALAR, optional => 1 },
         stderr      => { type => SCALAR, optional => 1 },
         pidfile     => { type => SCALAR, optional => 1 },
-        cwd => { type => SCALAR, optional => 1 },
+        cwd         => { type => SCALAR, optional => 1 },
     });
 
     return bless $params => $class;
