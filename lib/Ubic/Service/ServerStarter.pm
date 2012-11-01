@@ -67,7 +67,7 @@ sub start_impl {
         pidfile => $self->pidfile,
         term_timeout => 5, # TODO - configurable?
     };
-    for (qw/ cwd stdout stderr ubic_log /) {
+    for (qw/ env cwd stdout stderr ubic_log /) {
         $daemon_opts->{$_} = $self->{$_} if defined $self->{$_};
     }
     start_daemon($daemon_opts);
