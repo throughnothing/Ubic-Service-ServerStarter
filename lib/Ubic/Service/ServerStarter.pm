@@ -4,11 +4,10 @@ package Ubic::Service::ServerStarter;
 use base qw(Ubic::Service::Skeleton);
 
 use Params::Validate qw(:all);
-use Plack;
 
 use Ubic::Daemon qw(:all);
 
-# ABSTRACT: Helper for running psgi applications with ubic and plackup
+# ABSTRACT: Run programs using Server::Starter
 
 my $server_command = $ENV{'UBIC_SERVICE_SERVERSTARTER_BIN'} || 'start_server';
 
@@ -16,7 +15,6 @@ sub new {
     my ($class) = (shift);
 
     my $params = validate(@_, {
-        app_name    => { type => SCALAR, optional => 1 },
         cmd         => { type => ARRAYREF },
         args        => { type => HASHREF, optional => 1 },
         user        => { type => SCALAR, optional => 1 },
@@ -36,7 +34,6 @@ sub new {
 sub pidfile {
     my ($self) = @_;
     return $self->{pidfile} if defined $self->{pidfile};
-    return "/tmp/$self->{app_name}.pid" if defined $self->{app_name};
     return "/tmp/".$self->full_name.".pid";
 }
 
@@ -104,10 +101,12 @@ sub status_impl {
 
 sub reload {
     my ($self) = @_;
-    system $server_command, '--restart',
+    my $reval = system $server_command, '--restart',
         '--pid-file', $self->sspidfile,
         '--status-file', $self->statusfile;
-    return 'reloaded';
+
+    return 'reloaded' if $reval == 0;
+    die 'failed to reload!';
 }
 
 sub user {
@@ -131,11 +130,6 @@ sub timeout_options {
         stop => { trials => 15, step => 0.1 },
     };
 }
-
-sub defaults {
-    return ();
-}
-
 
 1;
 
@@ -163,8 +157,8 @@ sub defaults {
 
 =head1 DESCRIPTION
 
-This service is a common ubic wrap for psgi applications.
-It uses plackup for running these applications.
+This service allows you to wrap any command with L<Server::Starter>, which
+enables graceful reloading of that app without any downtime.
 
 =head1 NAME
 
@@ -177,7 +171,7 @@ with L<Server::Starter>
 
 =item I<args> (optional)
 
-Arguments to send to start_server.
+Arguments to send to C<start_server>.
 
 =item I<cmd> (required)
 
@@ -198,19 +192,19 @@ Path to ubic log.
 
 =item I<stdout>
 
-Path to stdout log of plackup.
+Path to stdout log.
 
 =item I<stderr>
 
-Path to stderr log of plackup.
+Path to stderr log.
 
 =item I<user>
 
-User under which plackup will be started.
+User under which C<start_server> will be started.
 
 =item I<group>
 
-Group under which plackup will be started. Default is all user groups.
+Group under which C<start_server> will be started. Default is all user groups.
 
 =item I<cwd>
 
@@ -219,35 +213,3 @@ Change working directory before starting a daemon.
 =item I<pidfile>
 
 Pidfile for C<Ubic::Daemon> module.
-
-If not specified, it will be derived from service's name or from I<app_name>,
-if provided.
-
-Pidfile is:
-
-=over
-
-=item *
-
-I<pidfile> option value, if provided;
-
-=item *
-
-C</tmp/APP_NAME.pid>, where APP_NAME is I<app_name> option value, if it's
-provided;
-
-=item *
-
-C</tmp/SERVICE_NAME.pid>, where SERVICE_NAME is service's full name.
-
-=item C<pidfile()>
-
-Get pidfile name.
-
-=item C<bin()>
-
-Get command-line with all arguments in the arrayref form.
-
-=for Pod::Coverage defaults
-
-=back

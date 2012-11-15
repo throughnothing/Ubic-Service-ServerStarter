@@ -1,10 +1,10 @@
 # NAME
 
-Ubic::Service::ServerStarter - Helper for running psgi applications with ubic and plackup
+Ubic::Service::ServerStarter - Run programs using Server::Starter
 
 # VERSION
 
-version 0.001
+version 0.002
 
 # SYNOPSIS
 
@@ -30,8 +30,8 @@ version 0.001
 
 # DESCRIPTION
 
-This service is a common ubic wrap for psgi applications.
-It uses plackup for running these applications.
+This service allows you to wrap any command with [Server::Starter](http://search.cpan.org/perldoc?Server::Starter), which
+enables graceful reloading of that app without any downtime.
 
 # NAME
 
@@ -42,7 +42,7 @@ with [Server::Starter](http://search.cpan.org/perldoc?Server::Starter)
 
 - _args_ (optional)
 
-Arguments to send to start_server.
+Arguments to send to `start_server`.
 
 - _cmd_ (required)
 
@@ -63,19 +63,19 @@ Path to ubic log.
 
 - _stdout_
 
-Path to stdout log of plackup.
+Path to stdout log.
 
 - _stderr_
 
-Path to stderr log of plackup.
+Path to stderr log.
 
 - _user_
 
-User under which plackup will be started.
+User under which `start_server` will be started.
 
 - _group_
 
-Group under which plackup will be started. Default is all user groups.
+Group under which `start_server` will be started. Default is all user groups.
 
 - _cwd_
 
@@ -84,23 +84,6 @@ Change working directory before starting a daemon.
 - _pidfile_
 
 Pidfile for `Ubic::Daemon` module.
-
-If not specified, it will be derived from service's name or from _app_name_,
-if provided.
-
-Pidfile is:
-
-                - _pidfile_ option value, if provided;
-            - `/tmp/APP_NAME.pid`, where APP_NAME is _app_name_ option value, if it's
-            provided;
-        - `/tmp/SERVICE_NAME.pid`, where SERVICE_NAME is service's full name.
-    - `pidfile()`
-
-    Get pidfile name.
-
-    - `bin()`
-
-    Get command-line with all arguments in the arrayref form.
 
 # AUTHOR
 

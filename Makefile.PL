@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Helper for running psgi applications with ubic and plackup",
+  "ABSTRACT" => "Run programs using Server::Starter",
   "AUTHOR" => "William Wolf <throughnothing\@gmail.com>",
   "BUILD_REQUIRES" => {
     "File::Find" => 0,
@@ -25,7 +25,6 @@ my %WriteMakefileArgs = (
   "NAME" => "Ubic::Service::ServerStarter",
   "PREREQ_PM" => {
     "Params::Validate" => 0,
-    "Plack" => 0,
     "Server::Starter" => "0.12",
     "Ubic::Daemon" => 0,
     "Ubic::Service::Skeleton" => 0,
@@ -33,7 +32,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.001",
+  "VERSION" => "0.002",
   "test" => {
     "TESTS" => "t/*.t"
   }
