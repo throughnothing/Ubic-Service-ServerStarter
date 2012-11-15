@@ -26,6 +26,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Params::Validate" => 0,
     "Plack" => 0,
+    "Server::Starter" => "0.12",
     "Ubic::Daemon" => 0,
     "Ubic::Service::Skeleton" => 0,
     "base" => 0,
