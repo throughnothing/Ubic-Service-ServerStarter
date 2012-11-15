@@ -10,19 +10,20 @@ use Ubic::Daemon qw(:all);
 
 # ABSTRACT: Helper for running psgi applications with ubic and plackup
 
-my $server_command = $ENV{'UBIC_SERVICE_SERVERSTARTER_BIN'} || 'server_starter';
+my $server_command = $ENV{'UBIC_SERVICE_SERVERSTARTER_BIN'} || 'start_server';
 
 sub new {
     my ($class) = (shift);
 
     my $params = validate(@_, {
+        app_name    => { type => SCALAR, optional => 1 },
         cmd         => { type => ARRAYREF },
         args        => { type => HASHREF, optional => 1 },
         user        => { type => SCALAR, optional => 1 },
         group       => { type => SCALAR | ARRAYREF, optional => 1 },
         status      => { type => CODEREF, optional => 1 },
         ubic_log    => { type => SCALAR, optional => 1 },
-        env         => { type => SCALAR, optional => 1 },
+        env         => { type => HASHREF, optional => 1 },
         stdout      => { type => SCALAR, optional => 1 },
         stderr      => { type => SCALAR, optional => 1 },
         pidfile     => { type => SCALAR, optional => 1 },
@@ -39,15 +40,25 @@ sub pidfile {
     return "/tmp/".$self->full_name.".pid";
 }
 
+sub sspidfile {
+    my ($self) = @_;
+    return $self->{args}{'pid-file'} || $self->pidfile . '.ss';
+}
+
+sub statusfile {
+    my ($self) = @_;
+    return $self->{args}{'status-file'} || $self->pidfile . '.status.ss';
+}
+
 sub bin {
     my ($self) = @_;
 
     my @cmd = split(/\s+/, $server_command);
 
-    my %args = (
-        %{ $self->{args} },
-        '--'
-    );
+    my %args = %{ $self->{args} };
+    $args{'pid-file'} = $self->sspidfile unless $args{'pid-file'};
+    $args{'status-file'} = $self->statusfile unless $args{'status-file'};
+
     for my $key (keys %args) {
         my $cmd_key = (length $key == 1) ? '-' : '--';
         $cmd_key .= $key;
@@ -55,7 +66,7 @@ sub bin {
         next unless defined $v;
         push @cmd, $cmd_key, $v;
     }
-    push @cmd, @{ $self->{cmd} };
+    push @cmd, '--', @{ $self->{cmd} };
 
     return \@cmd;
 }
@@ -93,7 +104,9 @@ sub status_impl {
 
 sub reload {
     my ($self) = @_;
-    system $server_command, '--restart', '--pid-file', $self->pidfile;
+    system $server_command, '--restart',
+        '--pid-file', $self->sspidfile,
+        '--status-file', $self->statusfile;
     return 'reloaded';
 }
 
